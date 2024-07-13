@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+            margin: 0;
+        }
+
+        .calculator {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .display {
+            background-color: #222;
+            color: #fff;
+            text-align: right;
+            padding: 20px;
+            font-size: 2em;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+        }
+
+        .btn {
+            padding: 20px;
+            font-size: 1.5em;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #ddd;
+        }
+
+        .operator {
+            background-color: #ff9500;
+            color: #fff;
+        }
+
+        .operator:hover {
+            background-color: #e08900;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <div class="display" id="display">0</div>
+            <div class="buttons">
+                <button class="btn" id="clear">AC</button>
+                <button class="btn" id="modulo">%</button>
+                <button class="btn" id="square">x²</button>
+                <button class="btn operator" id="divide">/</button>
+                <button class="btn" id="seven">7</button>
+                <button class="btn" id="eight">8</button>
+                <button class="btn" id="nine">9</button>
+                <button class="btn operator" id="multiply">*</button>
+                <button class="btn" id="four">4</button>
+                <button class="btn" id="five">5</button>
+                <button class="btn" id="six">6</button>
+                <button class="btn operator" id="subtract">-</button>
+                <button class="btn" id="one">1</button>
+                <button class="btn" id="two">2</button>
+                <button class="btn" id="three">3</button>
+                <button class="btn operator" id="add">+</button>
+                <button class="btn" id="zero">0</button>
+                <button class="btn" id="decimal">.</button>
+                <button class="btn" id="equals">=</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const display = document.getElementById('display');
+            const buttons = document.querySelectorAll('.btn');
+            let currentInput = '0';
+            let operator = null;
+            let previousInput = null;
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const value = this.innerText;
+
+                    if (this.id === 'clear') {
+                        currentInput = '0';
+                        operator = null;
+                        previousInput = null;
+                    } else if (this.id === 'equals') {
+                        if (operator && previousInput !== null) {
+                            currentInput = operate(operator, parseFloat(previousInput), parseFloat(currentInput)).toString();
+                            operator = null;
+                            previousInput = null;
+                        }
+                    } else if (this.classList.contains('operator')) {
+                        if (operator && previousInput !== null) {
+                            currentInput = operate(operator, parseFloat(previousInput), parseFloat(currentInput)).toString();
+                        }
+                        operator = value;
+                        previousInput = currentInput;
+                        currentInput = '0';
+                    } else if (this.id === 'decimal') {
+                        if (!currentInput.includes('.')) {
+                            currentInput += '.';
+                        }
+                    } else if (this.id === 'modulo') {
+                        currentInput = (parseFloat(currentInput) / 100).toString();
+                    } else if (this.id === 'square') {
+                        currentInput = (parseFloat(currentInput) ** 2).toString();
+                    } else {
+                        if (currentInput === '0') {
+                            currentInput = value;
+                        } else {
+                            currentInput += value;
+                        }
+                    }
+                    display.innerText = currentInput;
+                });
+            });
+
+            function operate(operator, num1, num2) {
+                switch (operator) {
+                    case '+':
+                        return num1 + num2;
+                    case '-':
+                        return num1 - num2;
+                    case '*':
+                        return num1 * num2;
+                    case '/':
+                        return num1 / num2;
+                    default:
+                        return num2;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
